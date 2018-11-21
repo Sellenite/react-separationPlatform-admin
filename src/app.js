@@ -1,5 +1,7 @@
-import './style.scss';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var app = document.getElementById('app');
-
-app.innerHTML = 'test';
+ReactDOM.render(
+    <div>Hello</div>,
+    document.getElementById('app')
+);
