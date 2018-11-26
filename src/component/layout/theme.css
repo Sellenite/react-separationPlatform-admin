@@ -521,10 +521,6 @@ footer p {
     padding: 12px 10px;
 }
 
-.sidebar-collapse>.nav>li {
-    border-bottom: 1px solid rgba(107, 108, 109, 0.19);
-}
-
 ul.nav.nav-second-level.collapse.in {
     background: #17191B;
 }

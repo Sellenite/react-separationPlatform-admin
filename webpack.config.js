@@ -91,7 +91,7 @@ module.exports = {
     plugins: [
         // 处理html文件的插件
         new HtmlWebpackPlugin({
-            template: './index.html',
+            template: './src/index.html',
             favicon: './favicon.ico'
         }),
         // 处理提取独立css的插件
