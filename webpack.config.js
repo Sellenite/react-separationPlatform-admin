@@ -20,6 +20,14 @@ module.exports = {
         // 输出文件地址
         path: path.resolve(__dirname, 'dist')
     },
+    resolve: {
+        alias: {
+            page: path.resolve(__dirname, 'src/page'),
+            component: path.resolve(__dirname, 'src/component'),
+            util: path.resolve(__dirname, 'src/util'),
+            service: path.resolve(__dirname, 'src/service')
+        }
+    },
     module: {
         rules: [
             // js/jsx文件的配置
@@ -97,6 +105,7 @@ module.exports = {
     devServer: {
         // 需要配置publicPath，才能正确引用资源文件
         port: 8086,
+        // 访问的路径为404时会重定向到这个地址
         historyApiFallback: {
             index: '/dist/index.html'
         }
