@@ -7,6 +7,7 @@ import Layout from 'component/layout/index.jsx';
 // 页面
 import Home from 'page/home/index.jsx';
 import ErrorPage from 'page/error/index.jsx';
+import Login from 'page/login/index.jsx';
 
 class App extends React.Component {
     render() {
@@ -22,6 +23,7 @@ class App extends React.Component {
         return (
             <Router>
                 <Switch>
+                    <Route path="/Login" component={Login} />
                     <Route path="/" render={props => LayoutRouter} />
                 </Switch>
             </Router>
