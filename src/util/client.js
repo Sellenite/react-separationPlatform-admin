@@ -13,7 +13,8 @@ class Client {
                 success(res) {
                     // 成功
                     if (res.status === 0) {
-                        typeof resolve === 'function' && resolve(res.data, res.msg);
+                        // resolve，reject只能接受一个参数，多余的会被忽略
+                        typeof resolve === 'function' && resolve(res.data);
                     } else if (res.status === 10) {
                         this.doLogin();
                     } else {
