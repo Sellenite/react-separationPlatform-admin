@@ -38,7 +38,8 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         // 使用多个处理的时候，会以最右边为最开始执行的loader，然后依次向左执行
-                        presets: ['env', 'react']
+                        presets: ['env', 'react'],
+                        plugins: ['transform-runtime']
                     }
                 }
             },
@@ -100,6 +101,11 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'common',
             filename: 'js/base.js'
+        }),
+        new webpack.SourceMapDevToolPlugin({
+            filename: 'sourcemaps/[file].map',
+            publicPath: '/dist/',
+            fileContext: 'public'
         })
     ],
     devServer: {
@@ -108,6 +114,17 @@ module.exports = {
         // 访问的路径为404时会重定向到这个地址
         historyApiFallback: {
             index: '/dist/index.html'
+        },
+        proxy: {
+            '/manage': {
+                target: 'http://admintest.happymmall.com',
+                // 改变请求头，使服务器认这个地址
+                changeOrigin: true
+            },
+            '/user/logout.do': {
+                target: 'http://admintest.happymmall.com',
+                changeOrigin: true
+            }
         }
     }
 };

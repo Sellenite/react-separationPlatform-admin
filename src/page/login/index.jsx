@@ -2,6 +2,10 @@ import React from 'react';
 
 import './index.scss';
 
+import Client from 'util/client.js';
+
+const client = new Client();
+
 class Login extends React.Component {
     constructor(props) {
         super(props);
@@ -9,6 +13,10 @@ class Login extends React.Component {
             username: '',
             password: ''
         }
+    }
+
+    componentWillMount() {
+        document.title = '欢迎登录 - MMALL管理系统';
     }
 
     onInputChange(e) {
@@ -19,8 +27,17 @@ class Login extends React.Component {
         });
     }
 
-    onSubmit() {
-        console.log(this.state.username, this.state.password);
+    async onSubmit() {
+        let params = {
+            username: this.state.username,
+            password: this.state.password
+        }
+        try {
+            let res = await client.request('/manage/user/login.do', params);
+            console.log(res);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     render() {
