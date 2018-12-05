@@ -1,8 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom';
+
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducer from './store/reducers.js';
 
 import Layout from 'component/layout/index.jsx';
+
+const store = createStore(reducer);
+
+// 监听状态
+let currentValue = store.getState();
+const listener = () => {
+    const previousValue = currentValue;
+    currentValue = store.getState();
+    console.log('当前state:');
+    console.log(currentValue);
+}
+
+// 订阅监听状态
+store.subscribe(listener);
 
 // 页面
 import Home from 'page/home/index.jsx';
@@ -31,8 +49,18 @@ class App extends React.Component {
     }
 }
 
+class AppStore extends React.Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <App />
+            </Provider>
+        );
+    }
+}
+
 
 ReactDOM.render(
-    <App />,
+    <AppStore />,
     document.getElementById('app')
 );

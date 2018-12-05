@@ -25,7 +25,8 @@ module.exports = {
             page: path.resolve(__dirname, 'src/page'),
             component: path.resolve(__dirname, 'src/component'),
             util: path.resolve(__dirname, 'src/util'),
-            service: path.resolve(__dirname, 'src/service')
+            service: path.resolve(__dirname, 'src/service'),
+            store: path.resolve(__dirname, 'src/store'),
         }
     },
     module: {
@@ -38,7 +39,8 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         // 使用多个处理的时候，会以最右边为最开始执行的loader，然后依次向左执行
-                        presets: ['env', 'react'],
+                        // 不安装stage-0（babel-preset-stage-0），使用propTypes会报错
+                        presets: ['env', 'react', 'stage-0'],
                         plugins: ['transform-runtime']
                     }
                 }

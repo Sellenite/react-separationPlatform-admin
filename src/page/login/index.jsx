@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './index.scss';
 
@@ -6,7 +7,14 @@ import Client from 'util/client.js';
 
 const client = new Client();
 
+import { connect } from 'react-redux';
+import { saveRegisterInfo } from 'store/actions.js';
+
 class Login extends React.Component {
+    static propTypes = {
+        saveRegisterInfo: PropTypes.func.isRequired
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -34,7 +42,7 @@ class Login extends React.Component {
         }
         try {
             let res = await client.request('/manage/user/login.do', params);
-            console.log(res);
+            this.props.saveRegisterInfo(res);
         } catch (err) {
             console.log(err);
         }
@@ -70,5 +78,15 @@ class Login extends React.Component {
         );
     }
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        saveRegisterInfo: (info) => {
+            dispatch(saveRegisterInfo(info));
+        }
+    }
+}
+
+Login = connect(null, mapDispatchToProps)(Login);
 
 export default Login;
