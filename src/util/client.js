@@ -31,6 +31,44 @@ class Client {
     doLogin() {
         window.location.href = `/login?redirect=${window.location.pathname}`;
     }
+
+    saveStorage(name, value) {
+        if (typeof value === 'object') {
+            sessionStorage.setItem(name, JSON.stringify(value));
+        } else {
+            sessionStorage.setItem(name, value);
+        }
+    }
+
+    loadStorage(name) {
+        try {
+            return JSON.parse(sessionStorage.getItem(name));
+        } catch (err) {
+            return sessionStorage.getItem(name);
+        }
+    }
+
+    removeStorage(name) {
+        sessionStorage.removeItem(name);
+    }
+
+    getUrlParam(key) {
+        let params = window.location.search.substring(1);
+        let regex = new RegExp(`(^|&)${key}=([^&]*)($|&)`);
+        let result = params.match(regex) || [];
+        return result[2] || '';
+    }
+
+    successTip(msg) {
+        msg = msg ? msg : '操作成功';
+        alert(msg);
+    }
+
+    errorTip(err) {
+        err = err ? err : '错误';
+        alert(err);
+    }
+
 };
 
 export default Client;

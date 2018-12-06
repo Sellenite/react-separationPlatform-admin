@@ -10,6 +10,10 @@ import Layout from 'component/layout/index.jsx';
 
 const store = createStore(reducer);
 
+import Client from 'util/client.js';
+
+window.client = new Client();
+
 // 监听状态
 let currentValue = store.getState();
 const listener = () => {
