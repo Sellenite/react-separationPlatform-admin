@@ -33,20 +33,24 @@ import Login from 'page/login/index.jsx';
 
 class App extends React.Component {
     render() {
-        let LayoutRouter = (
-            <Layout>
-                <Switch>
-                    <Route exact path="/" component={Home} />
-                    <Route component={ErrorPage} />
-                </Switch>
-            </Layout>
-        );
+        let LayoutRouter = (props) => {
+            return (
+                // 为了传入router的history进行nav-top的跳转到login
+                // ...props是快捷传入父组件的传入的属性到子组件里
+                <Layout {...props}>
+                    <Switch>
+                        <Route exact path="/" component={Home} />
+                        <Route component={ErrorPage} />
+                    </Switch>
+                </Layout>
+            );
+        }
 
         return (
             <Router>
                 <Switch>
                     <Route path="/Login" component={Login} />
-                    <Route path="/" render={props => LayoutRouter} />
+                    <Route path="/" render={LayoutRouter} />
                 </Switch>
             </Router>
         )
