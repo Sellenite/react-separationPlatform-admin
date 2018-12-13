@@ -10,7 +10,7 @@ class Client {
                 url: this.host + url,
                 dataType: 'json',
                 data,
-                success(res) {
+                success: (res) => {
                     // 成功
                     if (res.status === 0) {
                         // resolve，reject只能接受一个参数，多余的会被忽略
@@ -21,15 +21,15 @@ class Client {
                         typeof reject === 'function' && reject(res.msg || res.data);
                     }
                 },
-                error(err) {
-                    typeof reject === 'function' && reject(res.msg || res.data);
+                error: (err) => {
+                    typeof reject === 'function' && reject(err.statusText);
                 }
             });
         });
     }
 
     doLogin() {
-        window.location.href = `/login?redirect=${window.location.pathname}`;
+        window.location.href = `/login?redirect=${window.encodeURIComponent(window.location.pathname)}`;
     }
 
     saveStorage(name, value) {
@@ -56,7 +56,7 @@ class Client {
         let params = window.location.search.substring(1);
         let regex = new RegExp(`(^|&)${key}=([^&]*)($|&)`);
         let result = params.match(regex) || [];
-        return result[2] || '';
+        return window.decodeURIComponent(result[2]) || '';
     }
 
     successTip(msg) {

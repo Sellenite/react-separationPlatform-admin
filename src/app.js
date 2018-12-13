@@ -28,6 +28,7 @@ store.subscribe(listener);
 
 // 页面
 import Home from 'page/home/index.jsx';
+import UserList from 'page/user/index.jsx';
 import ErrorPage from 'page/error/index.jsx';
 import Login from 'page/login/index.jsx';
 
@@ -40,6 +41,7 @@ class App extends React.Component {
                 <Layout {...props}>
                     <Switch>
                         <Route exact path="/" component={Home} />
+                        <Route path="/user" component={UserList} />
                         <Route component={ErrorPage} />
                     </Switch>
                 </Layout>
