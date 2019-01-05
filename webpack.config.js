@@ -22,6 +22,7 @@ module.exports = {
     },
     resolve: {
         alias: {
+            assets: path.resolve(__dirname, 'src/assets'),
             page: path.resolve(__dirname, 'src/page'),
             component: path.resolve(__dirname, 'src/component'),
             util: path.resolve(__dirname, 'src/util'),

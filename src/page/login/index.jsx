@@ -55,7 +55,6 @@ class Login extends React.Component {
         try {
             let res = await client.request('/manage/user/login.do', params);
             client.saveStorage('userinfo', res);
-            client.successTip('登陆成功');
             this.state.activeClick = false;
             this.props.history.push(this.state.redirect);
         } catch (err) {
