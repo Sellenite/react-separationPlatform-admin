@@ -25,7 +25,7 @@ class NavSide extends React.Component {
                             </Link>
                             <ul className="nav nav-second-level collapse in">
                                 <li>
-                                    <NavLink to="/product/management" exact activeClassName="active-menu">商品管理</NavLink>
+                                    <NavLink to="/product/index" exact activeClassName="active-menu">商品管理</NavLink>
                                 </li>
                                 <li>
                                     <NavLink to="/product/category" exact activeClassName="active-menu">品类管理</NavLink>
@@ -40,7 +40,7 @@ class NavSide extends React.Component {
                             </Link>
                             <ul className="nav nav-second-level collapse in">
                                 <li>
-                                    <NavLink to="/order/management" exact activeClassName="active-menu">订单管理</NavLink>
+                                    <NavLink to="/order" exact activeClassName="active-menu">订单管理</NavLink>
                                 </li>
                             </ul>
                         </li>
@@ -52,7 +52,7 @@ class NavSide extends React.Component {
                             </Link>
                             <ul className="nav nav-second-level collapse in">
                                 <li>
-                                    <NavLink to="/user/management" exact activeClassName="active-menu">用户管理</NavLink>
+                                    <NavLink to="/user" exact activeClassName="active-menu">用户管理</NavLink>
                                 </li>
                             </ul>
                         </li>

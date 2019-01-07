@@ -1,5 +1,6 @@
 import React from 'react';
 import PageTitle from 'component/page-title/index.jsx';
+import TableList from 'component/table-list/index.jsx';
 import Pagination from 'component/pagination/index.jsx';
 
 class UserList extends React.Component {
@@ -9,7 +10,6 @@ class UserList extends React.Component {
             pageSize: 10,
             pageNum: 1,
             total: 0,
-            isFirstLoad: true,
             userList: []
         };
     }
@@ -41,53 +41,29 @@ class UserList extends React.Component {
             });
         } catch (err) {
             client.errorTip(err);
-        } finally {
-            this.setState({
-                isFirstLoad: false
-            });
         }
     }
 
     render() {
+        let theadArr = ['ID', '用户名', '邮箱', '电话', '注册时间'];
         return (
             <div id="page-wrapper">
                 <PageTitle title="用户列表" />
-                <div className="row">
-                    <div className="col-md-12">
-                        <table className="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <td>ID</td>
-                                    <td>用户名</td>
-                                    <td>邮箱</td>
-                                    <td>电话</td>
-                                    <td>注册时间</td>
+                <TableList header={theadArr}>
+                    {
+                        this.state.userList.map((item, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td>{item.id}</td>
+                                    <td>{item.username}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.phone}</td>
+                                    <td>{new Date(item.createTime).toLocaleString()}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.state.userList.length === 0
-                                        ?
-                                        <tr>
-                                            <td colSpan="5">{this.state.isFirstLoad ? '正在加载数据...' : '没有找到相应的结果'}</td>
-                                        </tr>
-                                        :
-                                        this.state.userList.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{item.id}</td>
-                                                    <td>{item.username}</td>
-                                                    <td>{item.email}</td>
-                                                    <td>{item.phone}</td>
-                                                    <td>{new Date(item.createTime).toLocaleString()}</td>
-                                                </tr>
-                                            );
-                                        })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            );
+                        })
+                    }
+                </TableList>
                 <Pagination current={this.state.pageNum} total={this.state.total} onChange={this.onChangePageNum.bind(this)} />
             </div>
         );
