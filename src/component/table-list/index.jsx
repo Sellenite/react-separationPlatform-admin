@@ -21,8 +21,13 @@ class TableList extends React.Component {
     }
 
     render() {
+
         let header = this.props.header.map((item, index) => {
-            return <td key={index}>{item}</td>
+            if (typeof item === 'object') {
+                return <td key={index} width={item.width}>{item.name}</td>
+            } else {
+                return <td key={index}>{item}</td>
+            }
         })
 
         let noData = (
