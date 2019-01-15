@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import PageTitle from 'component/page-title/index.jsx';
+import SearchBox from 'component/search-box/index.jsx';
 import TableList from 'component/table-list/index.jsx';
 import Pagination from 'component/pagination/index.jsx';
 
@@ -14,6 +15,8 @@ class ProductList extends React.Component {
             total: 0,
             pageNum: 1,
             pageSize: 10,
+            searchType: '',
+            searchKeyword: '',
             productList: []
         };
     }
@@ -35,6 +38,36 @@ class ProductList extends React.Component {
                 pageNum: res.pageNum
             });
         } catch (err) {
+            this.setState({
+                total: 0,
+                productList: []
+            });
+            client.errorTip(err);
+        }
+    }
+
+    async getProductSearchList() {
+        if (this.state.searchType === 'productId' && Number.isNaN(+this.state.searchKeyword)) {
+            client.errorTip('请输入格式正确的商品ID');
+            return;
+        }
+        let params = {
+            [this.state.searchType]: this.state.searchKeyword,
+            pageNum: this.state.pageNum,
+            pageSize: this.state.pageSize
+        };
+        try {
+            let res = await client.request('/manage/product/search.do', params);
+            this.setState({
+                productList: res.list,
+                total: res.total,
+                pageNum: res.pageNum
+            });
+        } catch (err) {
+            this.setState({
+                total: 0,
+                productList: []
+            });
             client.errorTip(err);
         }
     }
@@ -48,7 +81,7 @@ class ProductList extends React.Component {
         try {
             if (window.confirm(comfirmString)) {
                 await client.request('/manage/product/set_sale_status.do', params)
-                this.getProductList();
+                this.state.searchKeyword ? this.getProductSearchList() : this.getProductList()
             }
         } catch (err) {
             client.errorTip(err);
@@ -58,7 +91,15 @@ class ProductList extends React.Component {
     onPageNumChange(pageNum) {
         this.setState({
             pageNum
-        }, () => this.getProductList());
+        }, () => this.state.searchKeyword ? this.getProductSearchList() : this.getProductList());
+    }
+
+    handleSearchSubmit(searchType, searchKeyword) {
+        this.setState({
+            pageNum: 1,
+            searchType,
+            searchKeyword
+        }, () => !searchKeyword.trim() ? this.getProductList() : this.getProductSearchList());
     }
 
     render() {
@@ -79,6 +120,7 @@ class ProductList extends React.Component {
                         </Link>
                     </div>
                 </PageTitle>
+                <SearchBox onSubmit={this.handleSearchSubmit.bind(this)}></SearchBox>
                 <TableList header={header}>
                     {
                         this.state.productList.map((item, index) => {
