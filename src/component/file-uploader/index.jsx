@@ -30,7 +30,7 @@ class FileUploader extends React.Component {
         }
         // 取file文件的方法
         let fileObject = document.getElementById('upload_file').files[0];
-        // FormData表单对象，ie9+才能使用
+        // FormData表单对象，ie10+和其他浏览器才能使用，ie9和以下只能够使用原始form+iframe取回调
         let form = new FormData();
         // 将文件对象打入form实例，upload_file为后台指定的名称，取的是原有的input的name属性的值
         form.append('upload_file', fileObject);
