@@ -5,14 +5,26 @@ class Client {
         this.host = host;
     }
 
-    request(url = '', data = {}, type = 'post') {
+    request(url = '', data = {}, type = 'post', fileMode = false) {
         this.showLoading();
+        let params = {
+            type,
+            url: this.host + url,
+            dataType: 'json',
+            data
+        };
+        /**
+         * 使用传输文件模式时，需要将processData置为false，将contentType置为false
+         * processData作用：send的时候不将data数据序列化，直接传送一个对象到后台
+         * contentType作用：传输文件的时候不需要设置请求头
+         *  */
+        if (fileMode) {
+            params.processData = false;
+            params.contentType = false;
+        }
         return new Promise((resolve, reject) => {
             $.ajax({
-                type,
-                url: this.host + url,
-                dataType: 'json',
-                data,
+                ...params,
                 success: (res) => {
                     this.hideLoading();
                     // 成功
