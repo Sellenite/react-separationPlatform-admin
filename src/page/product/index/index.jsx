@@ -114,7 +114,7 @@ class ProductList extends React.Component {
             <div id="page-wrapper">
                 <PageTitle title="商品列表">
                     <div className="page-header-right">
-                        <Link to="/product/save" className="btn btn-primary">
+                        <Link to="/product/add" className="btn btn-primary">
                             <i className="fa fa-plus"></i>
                             <span>添加商品</span>
                         </Link>
@@ -138,7 +138,7 @@ class ProductList extends React.Component {
                                     </td>
                                     <td>
                                         <Link className="opear" to={`/product/detail/${item.id}`}>详情</Link>
-                                        <Link className="opear" to={`/product/save/${item.id}`}>编辑</Link>
+                                        <Link className="opear" to={`/product/add/${item.id}`}>编辑</Link>
                                     </td>
                                 </tr>
                             );
