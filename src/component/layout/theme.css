@@ -3,6 +3,14 @@ body {
     background: #f3f3f3;
 }
 
+.clearFix:after {
+    content: '';
+    clear: both;
+    display: block;
+    width: 0;
+    height: 0;
+}
+
 #wrapper {
     width: 100%;
 }

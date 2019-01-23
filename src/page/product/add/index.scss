@@ -6,6 +6,13 @@
 */
 
 $sub-img-size: 80px;
+
+.page-add {
+    .uploadArea {
+        padding-top: 7px;
+    }
+}
+
 .img-con{
     position: relative;
     width: $sub-img-size;

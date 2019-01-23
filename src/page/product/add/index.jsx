@@ -12,7 +12,8 @@ class ProductAdd extends React.Component {
             firstCategoryList: [],
             secondCategoryList: [],
             firstCategoryId: '',
-            secondCategoryId: ''
+            secondCategoryId: '',
+            uploadImageList: []
         }
     }
 
@@ -58,9 +59,29 @@ class ProductAdd extends React.Component {
         });
     }
 
+    uploadFileSuccess(res) {
+        let uploadImageList = this.state.uploadImageList;
+        uploadImageList.push(res.url);
+        this.setState({
+            uploadImageList
+        });
+    }
+
+    uploadFileError(err) {
+        client.errorTip(err);
+    }
+
+    deleteImg(index, e) {
+        let uploadImageList = this.state.uploadImageList;
+        uploadImageList.splice(index, 1);
+        this.setState({
+            uploadImageList
+        });
+    }
+
     render() {
         return (
-            <div id="page-wrapper">
+            <div id="page-wrapper" className="page-add">
                 <PageTitle title='添加商品' />
                 <div className="form-horizontal">
                     <div className="form-group">
@@ -107,7 +128,27 @@ class ProductAdd extends React.Component {
                     </div>
                     <div className="form-group">
                         <label className="col-md-2 control-label">商品图片</label>
-                        <FileUploader></FileUploader>
+                        <div className="col-md-10 uploadArea">
+                            {
+                                this.state.uploadImageList.length === 0 ?
+                                    <span>请上传图片</span> :
+                                    <div className="clearFix">
+                                        {
+                                            this.state.uploadImageList.map((item, index) => {
+                                                return (
+                                                    <div className="img-con" key={index}>
+                                                        <img src={item} className="img" />
+                                                        <i className="fa fa-close" onClick={this.deleteImg.bind(this, index)}></i>
+                                                    </div>
+                                                );
+                                            })
+                                        }
+                                    </div>
+                            }
+                            <FileUploader url="/manage/product/upload.do" onSuccess={this.uploadFileSuccess.bind(this)} onError={this.uploadFileError.bind(this)}>
+                                <button className="btn btn-xs btn-primary" style={{ marginTop: '7px' }}>点击上传图片</button>
+                            </FileUploader>
+                        </div>
                     </div>
                     <div className="form-group">
                         <label className="col-md-2 control-label">商品详情</label>
