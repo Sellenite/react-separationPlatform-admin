@@ -35,10 +35,12 @@ class RichEditor extends React.Component {
         // 自定义配置返回数据格式，不然按照默认的格式会报错
         this.editor.customConfig.uploadImgHooks = {
             customInsert: function(insertImg, result, editor) {
-                if (result.status == 10) {
+                if (result.status === 0) {
+                    insertImg(result.data.url);
+                } else if (result.status === 10) {
                     client.doLogin();
                 } else {
-                    insertImg(result.data.url);
+                    client.errorTip('图片上传错误，请重试');
                 }
             }
         };
