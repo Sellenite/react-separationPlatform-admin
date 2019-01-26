@@ -11,6 +11,11 @@ class Layout extends React.Component {
         super(props);
     }
 
+    /**
+     * 像这种需要将router的几个属性传入children有两种方法：
+     * 1、{ this.props.children && React.cloneElement(this.props.children, {额外的props})}
+     * 2、redux
+     */
     render() {
         return (
             <div id="wrapper">

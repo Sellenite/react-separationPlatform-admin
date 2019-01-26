@@ -2,6 +2,7 @@ import React from 'react';
 import PageTitle from 'component/page-title/index.jsx';
 import CategorySelector from 'component/category-selector/index.jsx';
 import FileUploader from 'component/file-uploader/index.jsx';
+import RichEditor from 'component/rich-editor/index.jsx';
 
 import './index.scss';
 
@@ -13,7 +14,13 @@ class ProductAdd extends React.Component {
             secondCategoryList: [],
             firstCategoryId: '',
             secondCategoryId: '',
-            uploadImageList: []
+            uploadImageList: [],
+            name: '',
+            subtitle: '',
+            detail: '',
+            price: '',
+            stock: '',
+            status: 1
         }
     }
 
@@ -61,7 +68,7 @@ class ProductAdd extends React.Component {
 
     uploadFileSuccess(res) {
         let uploadImageList = this.state.uploadImageList;
-        uploadImageList.push(res.url);
+        uploadImageList.push(res);
         this.setState({
             uploadImageList
         });
@@ -79,6 +86,50 @@ class ProductAdd extends React.Component {
         });
     }
 
+    handleValueChange(e) {
+        const name = e.target.name;
+        this.setState({
+            [name]: e.target.value
+        });
+    }
+
+    handleEditorChange(html) {
+        this.setState({
+            detail: html
+        });
+    }
+
+    async submitAddProduct() {
+        let pause = false;
+        let params = {
+            categoryId: this.state.secondCategoryId,
+            name: this.state.name,
+            subtitle: this.state.subtitle,
+            detail: this.state.detail,
+            price: this.state.price,
+            stock: this.state.stock,
+            status: this.state.status,
+            subImages: this.state.uploadImageList.map(item => item.uri).join(',')
+        }
+        for (let key in params) {
+            if (!params[key]) {
+                pause = true;
+                break
+            }
+        }
+        if (pause) {
+            client.errorTip('请填写完整的信息');
+            return;
+        }
+        try {
+            await client.request('/manage/product/save.do', params);
+            client.successTip('添加商品成功！');
+            this.props.history.replace('/product/index');
+        } catch (err) {
+            client.errorTip(err);
+        }
+    }
+
     render() {
         return (
             <div id="page-wrapper" className="page-add">
@@ -89,7 +140,7 @@ class ProductAdd extends React.Component {
                         <div className="col-md-5">
                             <input type="text" className="form-control"
                                 placeholder="请输入商品名称"
-                                name="name" />
+                                name="name" onChange={this.handleValueChange.bind(this)} />
                         </div>
                     </div>
                     <div className="form-group">
@@ -97,7 +148,7 @@ class ProductAdd extends React.Component {
                         <div className="col-md-5">
                             <input type="text" className="form-control"
                                 placeholder="请输入商品描述"
-                                name="subtitle" />
+                                name="subtitle" onChange={this.handleValueChange.bind(this)} />
                         </div>
                     </div>
                     <div className="form-group">
@@ -110,7 +161,7 @@ class ProductAdd extends React.Component {
                             <div className="input-group">
                                 <input type="number" className="form-control"
                                     placeholder="价格"
-                                    name="price" />
+                                    name="price" onChange={this.handleValueChange.bind(this)} />
                                 <span className="input-group-addon">元</span>
                             </div>
                         </div>
@@ -121,7 +172,7 @@ class ProductAdd extends React.Component {
                             <div className="input-group">
                                 <input type="number" className="form-control"
                                     placeholder="库存"
-                                    name="stock" />
+                                    name="stock" onChange={this.handleValueChange.bind(this)} />
                                 <span className="input-group-addon">件</span>
                             </div>
                         </div>
@@ -137,7 +188,7 @@ class ProductAdd extends React.Component {
                                             this.state.uploadImageList.map((item, index) => {
                                                 return (
                                                     <div className="img-con" key={index}>
-                                                        <img src={item} className="img" />
+                                                        <img src={item.url} className="img" />
                                                         <i className="fa fa-close" onClick={this.deleteImg.bind(this, index)}></i>
                                                     </div>
                                                 );
@@ -153,11 +204,12 @@ class ProductAdd extends React.Component {
                     <div className="form-group">
                         <label className="col-md-2 control-label">商品详情</label>
                         <div className="col-md-10">
+                            <RichEditor onEditorChange={this.handleEditorChange.bind(this)}></RichEditor>
                         </div>
                     </div>
                     <div className="form-group">
                         <div className="col-md-offset-2 col-md-10">
-                            <button type="submit" className="btn btn-primary">提交</button>
+                            <button type="submit" className="btn btn-primary" onClick={this.submitAddProduct.bind(this)}>提交</button>
                         </div>
                     </div>
                 </div>

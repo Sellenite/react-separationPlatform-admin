@@ -73,7 +73,7 @@ class Client {
         let params = window.location.search.substring(1);
         let regex = new RegExp(`(^|&)${key}=([^&]*)($|&)`);
         let result = params.match(regex) || [];
-        return window.decodeURIComponent(result[2]) || '';
+        return result[2] ? window.decodeURIComponent(result[2]) : '';
     }
 
     showLoading() {
