@@ -89,7 +89,7 @@ class Client {
             loadingCreater.decreaseNum(2);
         }
         // 所有叠加一起的loading全部完成后才会消失
-        if (loadingCreater.getNum() === 1) {
+        if (loadingCreater.getNum() === 0) {
             loading.style.display = 'none';
         }
     }

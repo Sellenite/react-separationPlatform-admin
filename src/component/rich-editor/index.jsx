@@ -11,17 +11,29 @@ class RichEditor extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            savePropsHtml: ''
+        }
+    }
+
+    // props传入方法，调用父元素的方法时，也会触发这个钩子函数
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.html !== this.state.savePropsHtml) {
+            this.setState({
+                savePropsHtml: nextProps.html
+            }, () => this.editor.txt.html(nextProps.html));
+        }
     }
 
     componentDidMount() {
         const elem = this.refs.editorElem;
-        const editor = new Editor(elem);
+        this.editor = new Editor(elem);
         // 配置服务器端地址
-        editor.customConfig.uploadImgServer = '/manage/product/upload.do';
+        this.editor.customConfig.uploadImgServer = '/manage/product/upload.do';
         // 配置服务器上传对应的字段
-        editor.customConfig.uploadFileName = 'upload_file';
+        this.editor.customConfig.uploadFileName = 'upload_file';
         // 自定义配置返回数据格式，不然按照默认的格式会报错
-        editor.customConfig.uploadImgHooks = {
+        this.editor.customConfig.uploadImgHooks = {
             customInsert: function(insertImg, result, editor) {
                 if (result.status == 10) {
                     client.doLogin();
@@ -31,10 +43,10 @@ class RichEditor extends React.Component {
             }
         };
         // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
-        editor.customConfig.onchange = (html) => {
+        this.editor.customConfig.onchange = (html) => {
             this.props.onEditorChange(html);
         };
-        editor.create();
+        this.editor.create();
     }
 
     render() {

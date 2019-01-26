@@ -10,6 +10,13 @@ class ProductAdd extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            productId: this.props.match.params.id,
+            productDetail: null,
+            propsDetail: {
+                firstCategoryId: '',
+                secondCategoryId: '',
+                detail: ''
+            },
             firstCategoryList: [],
             secondCategoryList: [],
             firstCategoryId: '',
@@ -26,13 +33,60 @@ class ProductAdd extends React.Component {
 
     async componentWillMount() {
         try {
-            let res = await this.getCategoryList();
+            let p1, productDetail, firstCategoryList;
+            let secondCategoryList = [];
+            // 父分类是无论新增或者修改都要先拿到
+            p1 = this.getCategoryList();
+            if (this.state.productId) {
+                // 与拿父分类接口并行，必须先拿到商品详情的父分类id，才能获取子分类接口
+                productDetail = await this.getProductDetail();
+                secondCategoryList = await this.getCategoryList(productDetail.parentCategoryId);
+            }
+            firstCategoryList = await p1;
             this.setState({
-                firstCategoryList: res
+                firstCategoryList,
+                secondCategoryList,
+                productDetail: productDetail || null
+            }, () => {
+                if (this.state.productDetail) {
+                    console.log(this.state.productDetail);
+                    this.setProductDetail();
+                }
             });
         } catch (err) {
             client.errorTip(err);
         }
+    }
+
+    getProductDetail() {
+        let params = {
+            productId: this.state.productId
+        };
+        return client.request('/manage/product/detail.do', params);
+    }
+
+    setProductDetail() {
+        this.setState({
+            firstCategoryId: this.state.productDetail.parentCategoryId,
+            secondCategoryId: this.state.productDetail.categoryId,
+            uploadImageList: this.state.productDetail.subImages.split(',').map((item) => {
+                return {
+                    uri: item,
+                    url: this.state.productDetail.imageHost + item
+                }
+            }),
+            name: this.state.productDetail.name,
+            subtitle: this.state.productDetail.subtitle,
+            detail: this.state.productDetail.detail,
+            price: this.state.productDetail.price,
+            stock: this.state.productDetail.stock,
+            status: this.state.productDetail.status,
+            propsDetail: {
+                firstCategoryId: this.state.productDetail.parentCategoryId,
+                secondCategoryId: this.state.productDetail.categoryId,
+                detail: this.state.productDetail.detail
+            }
+        });
     }
 
     getCategoryList(id) {
@@ -45,7 +99,8 @@ class ProductAdd extends React.Component {
     async handleFirstCategoryChange(id) {
         if (!id) {
             this.setState({
-                secondCategoryList: []
+                secondCategoryList: [],
+                firstCategoryId: ''
             });
             return;
         }
@@ -99,7 +154,7 @@ class ProductAdd extends React.Component {
         });
     }
 
-    async submitAddProduct() {
+    async submitSaveProduct() {
         let pause = false;
         let params = {
             categoryId: this.state.secondCategoryId,
@@ -110,6 +165,9 @@ class ProductAdd extends React.Component {
             stock: this.state.stock,
             status: this.state.status,
             subImages: this.state.uploadImageList.map(item => item.uri).join(',')
+        }
+        if (this.state.productId) {
+            params.id = this.state.productId;
         }
         for (let key in params) {
             if (!params[key]) {
@@ -123,7 +181,11 @@ class ProductAdd extends React.Component {
         }
         try {
             await client.request('/manage/product/save.do', params);
-            client.successTip('添加商品成功！');
+            if (params.id) {
+                client.successTip('修改商品成功！');
+            } else {
+                client.successTip('添加商品成功！');
+            }
             this.props.history.replace('/product/index');
         } catch (err) {
             client.errorTip(err);
@@ -133,13 +195,14 @@ class ProductAdd extends React.Component {
     render() {
         return (
             <div id="page-wrapper" className="page-add">
-                <PageTitle title='添加商品' />
+                <PageTitle title={this.state.productId ? '编辑商品' : '添加商品'} />
                 <div className="form-horizontal">
                     <div className="form-group">
                         <label className="col-md-2 control-label">商品名称</label>
                         <div className="col-md-5">
                             <input type="text" className="form-control"
                                 placeholder="请输入商品名称"
+                                value={this.state.name}
                                 name="name" onChange={this.handleValueChange.bind(this)} />
                         </div>
                     </div>
@@ -148,12 +211,13 @@ class ProductAdd extends React.Component {
                         <div className="col-md-5">
                             <input type="text" className="form-control"
                                 placeholder="请输入商品描述"
+                                value={this.state.subtitle}
                                 name="subtitle" onChange={this.handleValueChange.bind(this)} />
                         </div>
                     </div>
                     <div className="form-group">
                         <label className="col-md-2 control-label">所属分类</label>
-                        <CategorySelector firstCategoryList={this.state.firstCategoryList} secondCategoryList={this.state.secondCategoryList} onFirstCategoryChange={this.handleFirstCategoryChange.bind(this)} onSecondCategoryChange={this.handleSecondCategoryChange.bind(this)} />
+                        <CategorySelector firstCategoryList={this.state.firstCategoryList} secondCategoryList={this.state.secondCategoryList} onFirstCategoryChange={this.handleFirstCategoryChange.bind(this)} onSecondCategoryChange={this.handleSecondCategoryChange.bind(this)} firstCategoryId={this.state.propsDetail.firstCategoryId} secondCategoryId={this.state.propsDetail.secondCategoryId} />
                     </div>
                     <div className="form-group">
                         <label className="col-md-2 control-label">商品价格</label>
@@ -161,6 +225,7 @@ class ProductAdd extends React.Component {
                             <div className="input-group">
                                 <input type="number" className="form-control"
                                     placeholder="价格"
+                                    value={this.state.price}
                                     name="price" onChange={this.handleValueChange.bind(this)} />
                                 <span className="input-group-addon">元</span>
                             </div>
@@ -172,6 +237,7 @@ class ProductAdd extends React.Component {
                             <div className="input-group">
                                 <input type="number" className="form-control"
                                     placeholder="库存"
+                                    value={this.state.stock}
                                     name="stock" onChange={this.handleValueChange.bind(this)} />
                                 <span className="input-group-addon">件</span>
                             </div>
@@ -204,12 +270,12 @@ class ProductAdd extends React.Component {
                     <div className="form-group">
                         <label className="col-md-2 control-label">商品详情</label>
                         <div className="col-md-10">
-                            <RichEditor onEditorChange={this.handleEditorChange.bind(this)}></RichEditor>
+                            <RichEditor onEditorChange={this.handleEditorChange.bind(this)} html={this.state.propsDetail.detail}></RichEditor>
                         </div>
                     </div>
                     <div className="form-group">
                         <div className="col-md-offset-2 col-md-10">
-                            <button type="submit" className="btn btn-primary" onClick={this.submitAddProduct.bind(this)}>提交</button>
+                            <button type="submit" className="btn btn-primary" onClick={this.submitSaveProduct.bind(this)}>提交</button>
                         </div>
                     </div>
                 </div>

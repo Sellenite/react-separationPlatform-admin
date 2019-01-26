@@ -12,8 +12,8 @@ const createSingle = (fn) => {
             num = 0;
         } else {
             num = num - value;
-            if (num < 1) {
-                num = 1;
+            if (num < 0) {
+                num = 0;
             }
         }
     };
