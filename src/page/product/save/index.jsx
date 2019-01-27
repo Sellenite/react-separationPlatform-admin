@@ -69,12 +69,7 @@ class ProductAdd extends React.Component {
         this.setState({
             firstCategoryId: this.state.productDetail.parentCategoryId,
             secondCategoryId: this.state.productDetail.categoryId,
-            uploadImageList: this.state.productDetail.subImages.split(',').map((item) => {
-                return {
-                    uri: item,
-                    url: this.state.productDetail.imageHost + item
-                }
-            }),
+            uploadImageList: this.formatUploadImageList(),
             name: this.state.productDetail.name,
             subtitle: this.state.productDetail.subtitle,
             detail: this.state.productDetail.detail,
@@ -87,6 +82,29 @@ class ProductAdd extends React.Component {
                 detail: this.state.productDetail.detail
             }
         });
+    }
+
+    formatUploadImageList() {
+        let result,
+            arr = this.state.productDetail.subImages.split(',').map((item) => {
+                if (item) {
+                    return {
+                        uri: item,
+                        url: this.state.productDetail.imageHost + item
+                    };
+                } else {
+                    return '';
+                }
+            });
+        // 有些图片返回格式有问题
+        result = arr.slice();
+        for (let item of arr) {
+            if (!item) {
+                result = [];
+                break;
+            }
+        }
+        return result;
     }
 
     getCategoryList(id) {
