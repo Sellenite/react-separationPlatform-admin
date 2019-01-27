@@ -6,31 +6,35 @@ class CategorySelector extends React.Component {
     static propTypes = {
         firstCategoryList: PropTypes.array.isRequired,
         secondCategoryList: PropTypes.array.isRequired,
-        onFirstCategoryChange: PropTypes.func.isRequired
+        onFirstCategoryChange: PropTypes.func.isRequired,
+        firstCategoryId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        secondCategoryId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }
 
     constructor(props) {
         super(props);
         this.state = {
             firstCategoryId: '',
-            secondCategoryId: '',
-            firstPropsSet: false,
-            secondPropsSet: false
+            secondCategoryId: ''
         }
     }
 
-    // 数据回填时如果填过一次，就不用每次都set对应的id，不然会修改不了数据
+    // 传入的props，func和数组都会再执行这个钩子，防止复写数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.firstCategoryId && !this.state.firstPropsSet) {
+        // 可以使用这种方法判断是否重新复写
+        const isFirstCategoryIdChange = this.props.firstCategoryId !== nextProps.firstCategoryId;
+        const isSecondCategoryIdChange = this.props.secondCategoryId !== nextProps.secondCategoryId;
+        if (!isFirstCategoryIdChange && isSecondCategoryIdChange) {
+            return
+        }
+        if (isFirstCategoryIdChange) {
             this.setState({
-                firstCategoryId: nextProps.firstCategoryId,
-                firstPropsSet: true
+                firstCategoryId: nextProps.firstCategoryId
             });
         }
-        if (nextProps.secondCategoryId && !this.state.secondPropsSet) {
+        if (isSecondCategoryIdChange) {
             this.setState({
-                secondCategoryId: nextProps.secondCategoryId,
-                secondPropsSet: true
+                secondCategoryId: nextProps.secondCategoryId
             });
         }
     }

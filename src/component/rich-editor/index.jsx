@@ -11,17 +11,12 @@ class RichEditor extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            savePropsHtml: ''
-        }
     }
 
-    // props传入方法，调用父元素的方法时，也会触发这个钩子函数
+    // props传入方法，调用父元素的方法时，也会触发这个钩子函数，使用前后的props可以防止
     componentWillReceiveProps(nextProps) {
-        if (nextProps.html !== this.state.savePropsHtml) {
-            this.setState({
-                savePropsHtml: nextProps.html
-            }, () => this.editor.txt.html(nextProps.html));
+        if (this.props.html !== nextProps.html) {
+            this.editor.txt.html(nextProps.html);
         }
     }
 
