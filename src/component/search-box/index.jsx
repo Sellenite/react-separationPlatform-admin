@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 class SearchBox extends React.Component {
     static propTypes = {
-        onSubmit: PropTypes.func.isRequired
+        onSubmit: PropTypes.func.isRequired,
+        searchType: PropTypes.array.isRequired
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            searchType: 'productId',
+            searchType: props.searchType[0].value,
             searchKeyword: ''
         }
     }
@@ -43,8 +44,11 @@ class SearchBox extends React.Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <select className="form-control" onChange={this.onSearchTypeChange.bind(this)}>
-                                <option value="productId">按商品ID查询</option>
-                                <option value="productName">按商品名称查询</option>
+                                {
+                                    this.props.searchType.map((item, index) => {
+                                        return <option value={item.value} key={index}>{item.key}</option>
+                                    })
+                                }
                             </select>
                         </div>
                         <div className="form-group">

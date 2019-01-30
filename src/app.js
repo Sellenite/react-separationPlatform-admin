@@ -32,6 +32,7 @@ import UserList from 'page/user/index.jsx';
 import ErrorPage from 'page/error/index.jsx';
 import Login from 'page/login/index.jsx';
 import ProductRouter from 'page/product/router.jsx';
+import OrderRouter from 'page/order/router.jsx';
 
 class App extends React.Component {
     render() {
@@ -45,6 +46,7 @@ class App extends React.Component {
                         <Route path="/user" component={UserList} />
                         <Route path="/product" component={ProductRouter} />
                         <Route path="/product/category" component={ProductRouter} />
+                        <Route path="/order" component={OrderRouter} />
                         <Route component={ErrorPage} />
                     </Switch>
                 </Layout>

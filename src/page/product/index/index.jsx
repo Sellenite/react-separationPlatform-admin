@@ -68,7 +68,6 @@ class ProductList extends React.Component {
                 total: 0,
                 productList: []
             });
-            client.errorTip(err);
         }
     }
 
@@ -91,15 +90,16 @@ class ProductList extends React.Component {
     onPageNumChange(pageNum) {
         this.setState({
             pageNum
-        }, () => this.state.searchKeyword ? this.getProductSearchList() : this.getProductList());
+        }, () => !this.state.searchKeyword ? this.getProductSearchList() : this.getProductList());
     }
 
     handleSearchSubmit(searchType, searchKeyword) {
+        searchKeyword = String(searchKeyword).trim();
         this.setState({
             pageNum: 1,
             searchType,
             searchKeyword
-        }, () => !searchKeyword.trim() ? this.getProductList() : this.getProductSearchList());
+        }, () => !this.state.searchKeyword ? this.getProductList() : this.getProductSearchList());
     }
 
     render() {
@@ -120,7 +120,7 @@ class ProductList extends React.Component {
                         </Link>
                     </div>
                 </PageTitle>
-                <SearchBox onSubmit={this.handleSearchSubmit.bind(this)}></SearchBox>
+                <SearchBox onSubmit={this.handleSearchSubmit.bind(this)} searchType={[{ key: '按商品ID查询', value: 'productId' }, { key: '按商品名称查询', value: 'productName' }]}></SearchBox>
                 <TableList header={header}>
                     {
                         this.state.productList.map((item, index) => {

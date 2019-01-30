@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 
 class TableList extends React.Component {
     static propTypes = {
-        header: PropTypes.array.isRequired
+        header: PropTypes.array.isRequired,
+        children: PropTypes.array.isRequired
+    }
+
+    // 定义默认props
+    static defaultProps = {
+        header: [],
+        children: []
     }
 
     constructor(props) {
