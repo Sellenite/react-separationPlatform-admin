@@ -10,13 +10,17 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
  */
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
+
+console.log(WEBPACK_ENV);
+
 module.exports = {
     entry: './src/app.js',
     output: {
         // 输出文件
         filename: 'js/app.js',
         // 指定资源文件引用的目录，会加在资源路径的前面，dev-server模式时需要定义一个，线上时需要定义线上的目录
-        publicPath: '/dist/',
+        publicPath: WEBPACK_ENV === 'dev' ? '/dist/' : '//yuuhei.cn/dist/',
         // 输出文件地址
         path: path.resolve(__dirname, 'dist')
     },
