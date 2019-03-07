@@ -20,7 +20,7 @@ module.exports = {
         // 输出文件
         filename: 'js/app.js',
         // 指定资源文件引用的目录，会加在资源路径的前面，dev-server模式时需要定义一个，线上时需要定义线上的目录
-        publicPath: WEBPACK_ENV === 'dev' ? '/dist/' : '//yuuhei.cn/dist/',
+        publicPath: WEBPACK_ENV === 'dev' ? '/dist/' : '//a.com/dist/',
         // 输出文件地址
         path: path.resolve(__dirname, 'dist')
     },
